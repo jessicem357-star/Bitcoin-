@@ -1,0 +1,839 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bitcoin · Realistic UI/UX</title>
+  <!-- Fonts & icons -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: #0b0e14;
+      color: #e9edf5;
+      line-height: 1.5;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 1.5rem;
+    }
+
+    /* main dashboard card */
+    .dashboard {
+      max-width: 1300px;
+      width: 100%;
+      background: #131a24;
+      border-radius: 2.5rem;
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.8), 0 0 0 1px rgba(247, 147, 26, 0.1);
+      padding: 2rem 2rem 2rem 2rem;
+      backdrop-filter: blur(2px);
+      transition: all 0.2s;
+    }
+
+    /* top navigation */
+    .navbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 2rem;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+
+    .logo-area {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .btc-icon {
+      background: linear-gradient(145deg, #f7931a, #f9a83b);
+      width: 42px;
+      height: 42px;
+      border-radius: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.9rem;
+      color: #0b0e14;
+      font-weight: 700;
+      box-shadow: 0 8px 18px -6px rgba(247, 147, 26, 0.3);
+    }
+
+    .logo-text {
+      font-weight: 700;
+      font-size: 1.7rem;
+      letter-spacing: -0.02em;
+      background: linear-gradient(120deg, #ffffff, #c0c9d9);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 0.5rem;
+      background: #1e2632;
+      padding: 0.35rem;
+      border-radius: 60px;
+      border: 1px solid #2a3441;
+    }
+
+    .nav-links a {
+      text-decoration: none;
+      color: #9aa8b9;
+      font-weight: 500;
+      font-size: 0.9rem;
+      padding: 0.6rem 1.4rem;
+      border-radius: 40px;
+      transition: all 0.2s;
+    }
+
+    .nav-links a.active {
+      background: #2d3a4a;
+      color: #f7931a;
+      box-shadow: inset 0 1px 2px rgba(255, 255, 255, 0.05);
+    }
+
+    .nav-links a:hover {
+      color: #e9edf5;
+    }
+
+    .user-profile {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      background: #1e2632;
+      padding: 0.4rem 1rem 0.4rem 0.5rem;
+      border-radius: 40px;
+      border: 1px solid #2a3441;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .user-profile:hover {
+      border-color: #f7931a;
+      background: #202a38;
+    }
+
+    .avatar {
+      width: 36px;
+      height: 36px;
+      background: linear-gradient(145deg, #f7931a, #f7b84d);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      color: #0b0e14;
+      font-size: 1rem;
+    }
+
+    .user-name {
+      font-size: 0.9rem;
+      font-weight: 500;
+    }
+
+    /* main grid */
+    .grid {
+      display: grid;
+      grid-template-columns: 1fr 1.8fr 1fr;
+      gap: 1.5rem;
+      margin-bottom: 1.5rem;
+    }
+
+    /* card style */
+    .card {
+      background: #1a222e;
+      border-radius: 2rem;
+      padding: 1.5rem 1.5rem;
+      border: 1px solid #2b3647;
+      box-shadow: 0 8px 16px -8px rgba(0, 0, 0, 0.6);
+      transition: transform 0.2s, border-color 0.2s;
+    }
+
+    .card:hover {
+      border-color: #3f4d62;
+    }
+
+    .card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.2rem;
+    }
+
+    .card-header h3 {
+      font-weight: 600;
+      font-size: 1rem;
+      letter-spacing: 0.01em;
+      color: #a6b3c8;
+      text-transform: uppercase;
+    }
+
+    .card-header i {
+      color: #5a6b82;
+      font-size: 1.1rem;
+    }
+
+    /* balance area */
+    .balance-amount {
+      font-size: 2.8rem;
+      font-weight: 700;
+      letter-spacing: -0.03em;
+      line-height: 1.1;
+      margin-bottom: 0.25rem;
+      color: #ffffff;
+    }
+
+    .balance-sub {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      color: #8d9db0;
+      font-size: 0.9rem;
+    }
+
+    .balance-sub i {
+      color: #2ecc71;
+      font-size: 0.8rem;
+    }
+
+    .balance-fiat {
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: #cbd5e3;
+      margin-top: 0.3rem;
+    }
+
+    .action-buttons {
+      display: flex;
+      gap: 0.8rem;
+      margin-top: 1.8rem;
+    }
+
+    .btn {
+      border: none;
+      padding: 0.8rem 1.2rem;
+      border-radius: 2rem;
+      font-weight: 600;
+      font-size: 0.9rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      cursor: pointer;
+      transition: all 0.15s;
+      flex: 1;
+      font-family: 'Inter', sans-serif;
+      letter-spacing: 0.01em;
+    }
+
+    .btn-primary {
+      background: #f7931a;
+      color: #0b0e14;
+      box-shadow: 0 8px 18px -6px rgba(247, 147, 26, 0.4);
+    }
+
+    .btn-primary:hover {
+      background: #f9a83b;
+      transform: translateY(-1px);
+    }
+
+    .btn-secondary {
+      background: #27303e;
+      color: #dfe6f0;
+      border: 1px solid #364153;
+    }
+
+    .btn-secondary:hover {
+      background: #2f3a4b;
+      border-color: #4a5a72;
+    }
+
+    /* chart card */
+    .chart-container {
+      position: relative;
+      width: 100%;
+      height: 160px;
+      margin: 0.5rem 0 0.8rem;
+    }
+
+    .chart-svg {
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
+
+    .chart-footer {
+      display: flex;
+      justify-content: space-between;
+      color: #7e8b9f;
+      font-size: 0.8rem;
+    }
+
+    .price-change {
+      color: #2ecc71;
+      font-weight: 600;
+      background: rgba(46, 204, 113, 0.1);
+      padding: 0.2rem 0.7rem;
+      border-radius: 30px;
+    }
+
+    .price-change.negative {
+      color: #e74c3c;
+      background: rgba(231, 76, 60, 0.1);
+    }
+
+    /* market stats grid */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+      margin-top: 0.5rem;
+    }
+
+    .stat-item {
+      background: #131b26;
+      padding: 1rem;
+      border-radius: 1.5rem;
+      border: 1px solid #27303e;
+    }
+
+    .stat-label {
+      font-size: 0.75rem;
+      color: #7e8b9f;
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+      margin-bottom: 0.5rem;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+
+    .stat-value {
+      font-size: 1.2rem;
+      font-weight: 700;
+      color: #ffffff;
+      letter-spacing: -0.01em;
+    }
+
+    .stat-value small {
+      font-size: 0.75rem;
+      font-weight: 500;
+      color: #8d9db0;
+      margin-left: 0.4rem;
+    }
+
+    .green {
+      color: #2ecc71;
+    }
+
+    .red {
+      color: #e74c3c;
+    }
+
+    /* transaction list */
+    .transaction-list {
+      margin-top: 1rem;
+    }
+
+    .tx-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 1rem 0;
+      border-bottom: 1px solid #222d3c;
+    }
+
+    .tx-item:last-child {
+      border-bottom: none;
+    }
+
+    .tx-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: 12px;
+      background: #232e3d;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #f7931a;
+      font-size: 1.1rem;
+      margin-right: 0.9rem;
+    }
+
+    .tx-details {
+      flex: 1;
+    }
+
+    .tx-title {
+      font-weight: 600;
+      font-size: 0.9rem;
+      margin-bottom: 0.2rem;
+    }
+
+    .tx-date {
+      font-size: 0.7rem;
+      color: #7e8b9f;
+    }
+
+    .tx-amount {
+      font-weight: 700;
+      font-size: 0.95rem;
+      color: #ffffff;
+    }
+
+    .tx-amount.positive {
+      color: #2ecc71;
+    }
+
+    .tx-amount.negative {
+      color: #e74c3c;
+    }
+
+    /* bottom section */
+    .bottom-section {
+      display: grid;
+      grid-template-columns: 1fr 1.5fr;
+      gap: 1.5rem;
+      margin-top: 1.5rem;
+    }
+
+    .quick-send {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .send-input {
+      display: flex;
+      align-items: center;
+      background: #131b26;
+      border-radius: 3rem;
+      padding: 0.3rem 0.3rem 0.3rem 1.2rem;
+      margin: 1.2rem 0;
+      border: 1px solid #2b3647;
+      transition: border 0.2s;
+    }
+
+    .send-input:focus-within {
+      border-color: #f7931a;
+    }
+
+    .send-input input {
+      background: transparent;
+      border: none;
+      flex: 1;
+      color: white;
+      font-size: 0.95rem;
+      outline: none;
+      font-family: 'Inter', sans-serif;
+      font-weight: 500;
+    }
+
+    .send-input input::placeholder {
+      color: #5f6e84;
+      font-weight: 400;
+    }
+
+    .send-btn {
+      background: #f7931a;
+      border: none;
+      width: 44px;
+      height: 44px;
+      border-radius: 3rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #0b0e14;
+      font-size: 1.2rem;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+
+    .send-btn:hover {
+      background: #f9a83b;
+      transform: scale(1.02);
+    }
+
+    .contact-row {
+      display: flex;
+      gap: 1rem;
+      margin-top: 0.5rem;
+      flex-wrap: wrap;
+    }
+
+    .contact {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.3rem;
+      cursor: pointer;
+    }
+
+    .contact-avatar {
+      width: 46px;
+      height: 46px;
+      background: #2d3a4a;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 600;
+      color: #cdd9e9;
+      font-size: 1rem;
+      transition: all 0.15s;
+      border: 2px solid transparent;
+    }
+
+    .contact-avatar:hover {
+      border-color: #f7931a;
+      background: #354354;
+    }
+
+    .contact-name {
+      font-size: 0.65rem;
+      color: #8d9db0;
+      font-weight: 500;
+    }
+
+    /* toast notification */
+    .toast {
+      position: fixed;
+      bottom: 2rem;
+      left: 50%;
+      transform: translateX(-50%) translateY(100px);
+      background: #1e2a38;
+      backdrop-filter: blur(10px);
+      border: 1px solid #f7931a;
+      color: white;
+      padding: 0.8rem 1.8rem;
+      border-radius: 60px;
+      font-weight: 500;
+      font-size: 0.9rem;
+      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.7);
+      opacity: 0;
+      transition: all 0.3s ease;
+      pointer-events: none;
+      z-index: 999;
+    }
+
+    .toast.show {
+      transform: translateX(-50%) translateY(0);
+      opacity: 1;
+    }
+
+    /* responsive */
+    @media (max-width: 1100px) {
+      .grid {
+        grid-template-columns: 1fr 1.5fr;
+      }
+      .bottom-section {
+        grid-template-columns: 1fr;
+      }
+      .card:last-child {
+        grid-column: span 2;
+      }
+    }
+
+    @media (max-width: 780px) {
+      .grid {
+        grid-template-columns: 1fr;
+      }
+      .card:last-child {
+        grid-column: auto;
+      }
+      .navbar {
+        flex-direction: column;
+        align-items: stretch;
+      }
+      .nav-links {
+        order: 3;
+        justify-content: center;
+      }
+      .dashboard {
+        padding: 1.5rem;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<div class="dashboard">
+  <!-- navigation -->
+  <nav class="navbar">
+    <div class="logo-area">
+      <div class="btc-icon">₿</div>
+      <span class="logo-text">Bitcoin</span>
+    </div>
+    <div class="nav-links">
+      <a href="#" class="active">Dashboard</a>
+      <a href="#" onclick="showToast('Wallet view coming soon')">Wallet</a>
+      <a href="#" onclick="showToast('Market overview')">Market</a>
+    </div>
+    <div class="user-profile" onclick="showToast('Profile settings')">
+      <div class="avatar">A</div>
+      <span class="user-name">Alex M.</span>
+      <i class="fas fa-chevron-down" style="font-size: 0.7rem; color: #7e8b9f;"></i>
+    </div>
+  </nav>
+
+  <!-- main grid -->
+  <div class="grid">
+    <!-- balance card -->
+    <div class="card">
+      <div class="card-header">
+        <h3>Total balance</h3>
+        <i class="fas fa-wallet"></i>
+      </div>
+      <div class="balance-amount">₿ 2.487</div>
+      <div class="balance-sub">
+        <i class="fas fa-arrow-up"></i> +3.2% (24h)
+      </div>
+      <div class="balance-fiat">≈ $147,320.45</div>
+      <div class="action-buttons">
+        <button class="btn btn-primary" onclick="showToast('Send Bitcoin')"><i class="fas fa-paper-plane"></i> Send</button>
+        <button class="btn btn-secondary" onclick="showToast('Receive Bitcoin')"><i class="fas fa-qrcode"></i> Receive</button>
+      </div>
+    </div>
+
+    <!-- chart card -->
+    <div class="card">
+      <div class="card-header">
+        <h3>BTC / USD</h3>
+        <i class="fas fa-chart-line"></i>
+      </div>
+      <div class="chart-container">
+        <svg class="chart-svg" viewBox="0 0 400 120" preserveAspectRatio="none">
+          <defs>
+            <linearGradient id="gradientFill" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stop-color="#f7931a" stop-opacity="0.35"/>
+              <stop offset="100%" stop-color="#f7931a" stop-opacity="0"/>
+            </linearGradient>
+          </defs>
+          <path d="M0,80 Q30,60 60,70 T120,40 T180,55 T240,25 T300,35 T360,15 T400,20 L400,120 L0,120 Z" fill="url(#gradientFill)" />
+          <path d="M0,80 Q30,60 60,70 T120,40 T180,55 T240,25 T300,35 T360,15 T400,20" stroke="#f7931a" stroke-width="3" fill="none" stroke-linecap="round" />
+        </svg>
+      </div>
+      <div class="chart-footer">
+        <span>Today</span>
+        <span class="price-change"><i class="fas fa-caret-up"></i> 2.45%</span>
+      </div>
+      <!-- market stats -->
+      <div class="stats-grid">
+        <div class="stat-item">
+          <div class="stat-label"><i class="fas fa-arrow-down"></i> 24h low</div>
+          <div class="stat-value">$58,210</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-label"><i class="fas fa-arrow-up"></i> 24h high</div>
+          <div class="stat-value">$60,340</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-label"><i class="fas fa-chart-bar"></i> Volume</div>
+          <div class="stat-value">$32.8B</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-label"><i class="fas fa-bolt"></i> Dominance</div>
+          <div class="stat-value">52.4%</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- transactions card -->
+    <div class="card">
+      <div class="card-header">
+        <h3>Recent activity</h3>
+        <i class="fas fa-history"></i>
+      </div>
+      <div class="transaction-list">
+        <div class="tx-item">
+          <div class="tx-icon"><i class="fas fa-arrow-up"></i></div>
+          <div class="tx-details">
+            <div class="tx-title">Sent to Mike</div>
+            <div class="tx-date">Today, 09:42</div>
+          </div>
+          <div class="tx-amount negative">-0.0124 ₿</div>
+        </div>
+        <div class="tx-item">
+          <div class="tx-icon"><i class="fas fa-arrow-down"></i></div>
+          <div class="tx-details">
+            <div class="tx-title">Received from Sarah</div>
+            <div class="tx-date">Yesterday, 18:20</div>
+          </div>
+          <div class="tx-amount positive">+0.0450 ₿</div>
+        </div>
+        <div class="tx-item">
+          <div class="tx-icon"><i class="fas fa-arrow-up"></i></div>
+          <div class="tx-details">
+            <div class="tx-title">Exchange withdrawal</div>
+            <div class="tx-date">Mar 12, 11:05</div>
+          </div>
+          <div class="tx-amount negative">-0.0032 ₿</div>
+        </div>
+        <div class="tx-item">
+          <div class="tx-icon"><i class="fas fa-arrow-down"></i></div>
+          <div class="tx-details">
+            <div class="tx-title">Mining reward</div>
+            <div class="tx-date">Mar 10, 04:15</div>
+          </div>
+          <div class="tx-amount positive">+0.0089 ₿</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- bottom section: quick send + additional stats -->
+  <div class="bottom-section">
+    <div class="card quick-send">
+      <div class="card-header">
+        <h3>Quick send</h3>
+        <i class="fas fa-bolt"></i>
+      </div>
+      <div class="send-input">
+        <input type="text" placeholder="Bitcoin address or username" id="sendAddress">
+        <button class="send-btn" onclick="handleSend()"><i class="fas fa-arrow-right"></i></button>
+      </div>
+      <div class="contact-row">
+        <div class="contact" onclick="showToast('Send to Mike')">
+          <div class="contact-avatar">M</div>
+          <span class="contact-name">Mike</span>
+        </div>
+        <div class="contact" onclick="showToast('Send to Sarah')">
+          <div class="contact-avatar">S</div>
+          <span class="contact-name">Sarah</span>
+        </div>
+        <div class="contact" onclick="showToast('Send to David')">
+          <div class="contact-avatar">D</div>
+          <span class="contact-name">David</span>
+        </div>
+        <div class="contact" onclick="showToast('Send to Emma')">
+          <div class="contact-avatar">E</div>
+          <span class="contact-name">Emma</span>
+        </div>
+        <div class="contact" onclick="showToast('Add new contact')">
+          <div class="contact-avatar" style="background: #1e2632; border: 2px dashed #4a5a72;"><i class="fas fa-plus" style="font-size: 0.9rem; color: #8d9db0;"></i></div>
+          <span class="contact-name">Add</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- more stats / exchange rate card -->
+    <div class="card" style="display: flex; flex-direction: column; justify-content: space-between;">
+      <div class="card-header">
+        <h3>Market overview</h3>
+        <i class="fas fa-globe"></i>
+      </div>
+      <div style="display: flex; justify-content: space-between; margin-bottom: 1rem;">
+        <div>
+          <div style="font-size: 0.75rem; color: #7e8b9f; text-transform: uppercase;">BTC / USD</div>
+          <div style="font-size: 1.8rem; font-weight: 700; letter-spacing: -0.02em;">$59,245<span style="font-size: 0.9rem; font-weight: 500; color: #2ecc71; margin-left: 0.5rem;"><i class="fas fa-caret-up"></i> 2.4%</span></div>
+        </div>
+        <div style="text-align: right;">
+          <div style="font-size: 0.75rem; color: #7e8b9f; text-transform: uppercase;">ETH / USD</div>
+          <div style="font-size: 1.3rem; font-weight: 600; color: #cdd9e9;">$3,120<span style="font-size: 0.8rem; font-weight: 500; color: #e74c3c; margin-left: 0.4rem;"><i class="fas fa-caret-down"></i> 0.8%</span></div>
+        </div>
+      </div>
+      <div style="background: #131b26; border-radius: 1.5rem; padding: 1rem 1.2rem; display: flex; justify-content: space-between; align-items: center;">
+        <div style="display: flex; align-items: center; gap: 0.7rem;">
+          <i class="fas fa-coins" style="color: #f7931a; font-size: 1.5rem;"></i>
+          <div>
+            <div style="font-weight: 600; font-size: 0.9rem;">Bitcoin dominance</div>
+            <div style="font-size: 0.75rem; color: #7e8b9f;">Market share</div>
+          </div>
+        </div>
+        <div style="font-size: 1.6rem; font-weight: 700; color: #f7931a;">52.4%</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- toast message -->
+<div class="toast" id="toastMessage">Action completed</div>
+
+<script>
+  // toast functionality
+  function showToast(message) {
+    const toast = document.getElementById('toastMessage');
+    toast.textContent = message;
+    toast.classList.add('show');
+    clearTimeout(window.toastTimeout);
+    window.toastTimeout = setTimeout(() => {
+      toast.classList.remove('show');
+    }, 2200);
+  }
+
+  // handle send action
+  function handleSend() {
+    const input = document.getElementById('sendAddress');
+    const address = input.value.trim();
+    if (address === '') {
+      showToast('Please enter a Bitcoin address');
+    } else {
+      showToast(`Sending to ${address.substring(0, 8)}...`);
+      input.value = '';
+    }
+  }
+
+  // allow enter key on send input
+  document.getElementById('sendAddress').addEventListener('keypress', function(e) {
+    if (e.key === 'Enter') {
+      handleSend();
+    }
+  });
+
+  // subtle live update for demo realism (simulate price tick)
+  let btcPrice = 59245;
+  const priceElement = document.querySelector('.chart-footer .price-change');
+  // find the price display in bottom stats (we can optionally update the main display)
+  const priceDisplay = document.querySelector('.card .stat-value:first-of-type'); // not reliable, better skip.
+  // Instead, animate a tiny number? We'll keep the UI static but a subtle flicker? better not.
+
+  // show welcome toast on load
+  window.addEventListener('load', function() {
+    setTimeout(() => {
+      showToast('Welcome back, Alex · BTC +2.4%');
+    }, 500);
+  });
+
+  // add some interactive micro-interactions to contacts and buttons
+  document.querySelectorAll('.contact').forEach(el => {
+    el.addEventListener('click', function(e) {
+      // already has onclick, but we can keep it.
+    });
+  });
+
+  // realistic hover on card
+  document.querySelectorAll('.card').forEach(card => {
+    card.addEventListener('mouseenter', () => {
+      card.style.transform = 'translateY(-2px)';
+      card.style.transition = 'transform 0.2s, border-color 0.2s';
+    });
+    card.addEventListener('mouseleave', () => {
+      card.style.transform = 'translateY(0)';
+    });
+  });
+
+  // make nav link active switching
+  document.querySelectorAll('.nav-links a').forEach(link => {
+    link.addEventListener('click', function(e) {
+      e.preventDefault();
+      document.querySelectorAll('.nav-links a').forEach(l => l.classList.remove('active'));
+      this.classList.add('active');
+      if (!this.textContent.includes('Dashboard')) {
+        showToast(`Navigating to ${this.textContent}`);
+      }
+    });
+  });
+</script>
+
+</body>
+</html>
